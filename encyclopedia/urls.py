@@ -15,4 +15,6 @@ urlpatterns = [
     path('code/<sw:swcode>/', views.code_view, name='code_view'),
     path('start/', views.start, name='start'),
     path('get-character/', views.get_character, name='get_character'),
+    # категории персонажей
+    path('category/<int:cat_id>/', views.category, name='category'),
 ]

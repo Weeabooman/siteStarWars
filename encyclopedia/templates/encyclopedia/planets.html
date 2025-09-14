@@ -1,22 +1,39 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Планеты Star Wars</title>
-</head>
-<body>
-    <h1>Планеты</h1>
+{% extends 'encyclopedia/base.html' %}
 
-    <nav>
-        <a href="{% url 'home' %}">Главная</a> |
-        <a href="{% url 'characters' %}">Персонажи</a>
-    </nav>
+{% block title %}Планеты - Энциклопедия Star Wars{% endblock %}
+{% block heading %}🪐 Планеты Star Wars{% endblock %}
 
-    <ul>
-        {% for p in planets %}
-            <li>{{ p.name }}</li>
-        {% empty %}
-            <li>Список планет пуст</li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+{% block content %}
+{% if planets %}
+  <div class="row">
+    {% for planet in planets %}
+      <div class="col-md-4 mb-3">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">{{ planet.name }}</h5>
+            <p class="card-text">
+              <strong>Система:</strong> {{ planet.system|default:"Не указана" }}<br>
+              <strong>Климат:</strong> {{ planet.climate|default:"Не указан" }}<br>
+              <strong>Население:</strong> 
+              {% if planet.population %}
+                {{ planet.population|floatformat:0 }} жителей
+              {% else %}
+                Не указано
+              {% endif %}
+            </p>
+            <p class="card-text">
+              {{ planet.description|truncatewords:20|default:"Описание отсутствует" }}
+            </p>
+            <a href="{% url 'planet_detail' planet.name %}" class="btn btn-primary">Подробнее</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="alert alert-info" role="alert">
+    <h4 class="alert-heading">Планеты не найдены</h4>
+    <p>В базе данных пока нет планет. Добавьте их через админ-панель.</p>
+  </div>
+{% endif %}
+{% endblock %}

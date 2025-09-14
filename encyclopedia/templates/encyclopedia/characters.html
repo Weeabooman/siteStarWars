@@ -1,22 +1,55 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Персонажи Star Wars</title>
-</head>
-<body>
-    <h1>Персонажи</h1>
+{% extends 'encyclopedia/base.html' %}
+{% load encyclopedia_tags %}
 
-    <nav>
-        <a href="{% url 'home' %}">Главная</a> |
-        <a href="{% url 'planets' %}">Планеты</a>
-    </nav>
+{% block title %}Персонажи - Энциклопедия Star Wars{% endblock %}
+{% block heading %}👥 Персонажи Star Wars{% endblock %}
 
-    <ul>
-        {% for c in characters %}
-            <li>{{ c.name }}</li>
-        {% empty %}
-            <li>Список персонажей пуст</li>
+{% block content %}
+<div class="row">
+  <div class="col-md-3">
+    <div class="card">
+      <div class="card-header">
+        <h5>🏷️ Категории</h5>
+      </div>
+      <div class="card-body">
+        {% get_categories as categories %}
+        {% for category in categories %}
+          <a href="{% url 'category' category.id %}" class="btn btn-outline-primary btn-sm mb-2 d-block">
+            {{ category.name }}
+          </a>
         {% endfor %}
-    </ul>
-</body>
-</html>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-9">
+    {% if characters %}
+      <div class="row">
+        {% for character in characters %}
+          <div class="col-md-6 mb-3">
+            <div class="card h-100">
+              <div class="card-body">
+                <h5 class="card-title">{{ character.name }}</h5>
+                <p class="card-text">
+                  <strong>Вид:</strong> {{ character.species|default:"Не указан" }}<br>
+                  <strong>Родная планета:</strong> {{ character.homeworld.name|default:"Не указана" }}<br>
+                  <strong>Аффилиация:</strong> {{ character.affiliation|default:"Не указана" }}
+                </p>
+                <p class="card-text">
+                  {{ character.description|truncatewords:15|default:"Описание отсутствует" }}
+                </p>
+                <a href="{% url 'character_detail' character.id %}" class="btn btn-primary">Подробнее</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">Персонажи не найдены</h4>
+        <p>В базе данных пока нет персонажей. Добавьте их через админ-панель.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

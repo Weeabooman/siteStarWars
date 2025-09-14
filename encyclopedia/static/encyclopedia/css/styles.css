@@ -1,0 +1,160 @@
+/* Стили для энциклопедии Star Wars */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+    color: #ffffff;
+    min-height: 100vh;
+}
+
+.container {
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Заголовки */
+h1, h2, h3, h4, h5, h6 {
+    color: #ffd700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Навигация */
+.navbar {
+    background: linear-gradient(90deg, #1a1a2e 0%, #16213e 100%) !important;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.navbar-nav .nav-link {
+    color: #ffd700 !important;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #ffffff !important;
+    background: rgba(255, 215, 0, 0.2);
+    border-radius: 5px;
+}
+
+/* Карточки */
+.card {
+    background: rgba(26, 26, 46, 0.9);
+    border: 1px solid #ffd700;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+}
+
+.card-header {
+    background: linear-gradient(90deg, #ffd700 0%, #ffed4e 100%);
+    color: #000000;
+    font-weight: bold;
+    border-radius: 10px 10px 0 0 !important;
+}
+
+.card-title {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+.card-text {
+    color: #e0e0e0;
+}
+
+/* Кнопки */
+.btn-primary {
+    background: linear-gradient(45deg, #ffd700, #ffed4e);
+    border: none;
+    color: #000000;
+    font-weight: bold;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, #ffed4e, #ffd700);
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+}
+
+.btn-outline-primary {
+    border-color: #ffd700;
+    color: #ffd700;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background: #ffd700;
+    color: #000000;
+    transform: scale(1.05);
+}
+
+/* Алерты */
+.alert-info {
+    background: rgba(22, 33, 62, 0.9);
+    border: 1px solid #ffd700;
+    color: #e0e0e0;
+    border-radius: 10px;
+}
+
+.alert-heading {
+    color: #ffd700;
+}
+
+/* Списки */
+.list-group-item {
+    background: rgba(26, 26, 46, 0.7);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    color: #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+    background: rgba(255, 215, 0, 0.1);
+    border-color: #ffd700;
+}
+
+/* Футер */
+footer {
+    background: rgba(26, 26, 46, 0.9);
+    border-radius: 10px;
+    margin-top: 30px;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+/* Анимации */
+@keyframes glow {
+    0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); }
+    100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.3); }
+}
+
+.container {
+    animation: glow 3s ease-in-out infinite;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .container {
+        margin: 10px;
+        border-radius: 10px;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    .card {
+        margin-bottom: 15px;
+    }
+}

@@ -1,16 +1,42 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Энциклопедия Star Wars</title>
-</head>
-<body>
-    <h1>Добро пожаловать в энциклопедию Star Wars!</h1>
+{% extends 'encyclopedia/base.html' %}
 
-    <nav>
-        <a href="{% url 'characters' %}">Персонажи</a> |
-        <a href="{% url 'planets' %}">Планеты</a>
-    </nav>
+{% block title %}Главная страница - Энциклопедия Star Wars{% endblock %}
+{% block heading %}Добро пожаловать в энциклопедию Star Wars!{% endblock %}
 
-    <p>Здесь будет основная информация о вселенной Star Wars.</p>
-</body>
-</html>
+{% block content %}
+<div class="row">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">🌟 О вселенной Star Wars</h5>
+        <p class="card-text">
+          Добро пожаловать в самую полную энциклопедию вселенной Star Wars! 
+          Здесь вы найдете информацию о персонажах, планетах, кораблях и многом другом.
+        </p>
+        <p class="card-text">
+          Исследуйте галактику, изучайте историю джедаев и ситхов, 
+          открывайте новые миры и знакомьтесь с их обитателями.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">🚀 Быстрый доступ</h5>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <a href="{% url 'characters' %}" class="text-decoration-none">👥 Персонажи</a>
+          </li>
+          <li class="list-group-item">
+            <a href="{% url 'planets' %}" class="text-decoration-none">🪐 Планеты</a>
+          </li>
+          <li class="list-group-item">
+            <a href="{% url 'get_character' %}?name=Luke Skywalker" class="text-decoration-none">🔍 Поиск персонажа</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

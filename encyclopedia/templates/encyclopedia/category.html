@@ -1,0 +1,85 @@
+{% extends 'encyclopedia/base.html' %}
+{% load encyclopedia_tags %}
+
+{% block title %}{{ category_name }} - Энциклопедия Star Wars{% endblock %}
+{% block heading %}🏷️ {{ category_name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Персонажи категории "{{ category_name }}"</h5>
+        <p class="card-text">
+          {% if category_id == 1 %}
+            Джедаи — хранители мира и справедливости в галактике, использующие Светлую сторону Силы.
+          {% elif category_id == 2 %}
+            Ситхи — приверженцы Темной стороны Силы, стремящиеся к власти и господству.
+          {% elif category_id == 3 %}
+            Повстанцы — борцы за свободу, противостоящие Галактической Империи.
+          {% elif category_id == 4 %}
+            Империя — тоталитарный режим, установленный после падения Республики.
+          {% elif category_id == 5 %}
+            Сенаторы — политические деятели, представляющие различные миры в Сенате.
+          {% elif category_id == 6 %}
+            Пилоты — опытные летчики, управляющие звездными кораблями.
+          {% else %}
+            Информация о данной категории пока недоступна.
+          {% endif %}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  {% if characters %}
+    {% for character in characters %}
+      <div class="col-md-6 mb-3">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">{{ character.name }}</h5>
+            <p class="card-text">
+              <strong>Вид:</strong> {{ character.species|default:"Не указан" }}<br>
+              <strong>Родная планета:</strong> {{ character.homeworld.name|default:"Не указана" }}<br>
+              <strong>Аффилиация:</strong> {{ character.affiliation|default:"Не указана" }}<br>
+              <strong>Сторона Силы:</strong> {{ character.affiliation|force_side }}
+            </p>
+            <p class="card-text">
+              {{ character.description|truncatewords:15|default:"Описание отсутствует" }}
+            </p>
+            <a href="{% url 'character_detail' character.id %}" class="btn btn-primary">Подробнее</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="col-md-12">
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">Персонажи не найдены</h4>
+        <p>В данной категории пока нет персонажей. Добавьте их через админ-панель.</p>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<div class="row mt-4">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">🔗 Связанные категории</h5>
+        <div class="d-flex flex-wrap gap-2">
+          {% get_categories as categories %}
+          {% for category in categories %}
+            {% if category.id != category_id %}
+              <a href="{% url 'category' category.id %}" class="btn btn-outline-primary btn-sm">
+                {{ category.name }}
+              </a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'encyclopedia/base.html' %}
+{% load encyclopedia_tags %}
+
+{% block title %}{{ character.name }} - Энциклопедия Star Wars{% endblock %}
+{% block heading %}👤 {{ character.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">📋 Основная информация</h5>
+        <table class="table table-dark">
+          <tbody>
+            <tr>
+              <td><strong>Имя:</strong></td>
+              <td>{{ character.name }}</td>
+            </tr>
+            <tr>
+              <td><strong>Вид:</strong></td>
+              <td>{{ character.species|default:"Не указан" }}</td>
+            </tr>
+            <tr>
+              <td><strong>Родная планета:</strong></td>
+              <td>
+                {% if character.homeworld %}
+                  <a href="{% url 'planet_detail' character.homeworld.name %}" class="text-warning">
+                    {{ character.homeworld.name }}
+                  </a>
+                {% else %}
+                  Не указана
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Аффилиация:</strong></td>
+              <td>{{ character.affiliation|default:"Не указана" }}</td>
+            </tr>
+            <tr>
+              <td><strong>Сторона Силы:</strong></td>
+              <td>
+                <span class="badge {% if character.affiliation|force_side == 'Светлая сторона' %}bg-success{% elif character.affiliation|force_side == 'Темная сторона' %}bg-danger{% else %}bg-secondary{% endif %}">
+                  {{ character.affiliation|force_side }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+        {% if character.description %}
+          <h5 class="card-title mt-4">📖 Описание</h5>
+          <p class="card-text">{{ character.description }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">🔗 Связанные ссылки</h5>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <a href="{% url 'characters' %}" class="text-decoration-none">👥 Все персонажи</a>
+          </li>
+          {% if character.homeworld %}
+            <li class="list-group-item">
+              <a href="{% url 'planet_detail' character.homeworld.name %}" class="text-decoration-none">
+                🪐 {{ character.homeworld.name }}
+              </a>
+            </li>
+          {% endif %}
+          <li class="list-group-item">
+            <a href="{% url 'get_character' %}?name={{ character.name }}" class="text-decoration-none">
+              🔍 Поиск по имени
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="card mt-3">
+      <div class="card-body">
+        <h5 class="card-title">🏷️ Категории</h5>
+        <div class="d-flex flex-wrap gap-2">
+          {% get_categories as categories %}
+          {% for category in categories %}
+            <a href="{% url 'category' category.id %}" class="btn btn-outline-primary btn-sm">
+              {{ category.name }}
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
