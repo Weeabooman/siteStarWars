@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Персонажи Star Wars</title>
+</head>
+<body>
+    <h1>Персонажи</h1>
+
+    <nav>
+        <a href="{% url 'home' %}">Главная</a> |
+        <a href="{% url 'planets' %}">Планеты</a>
+    </nav>
+
+    <ul>
+        {% for c in characters %}
+            <li>{{ c.name }}</li>
+        {% empty %}
+            <li>Список персонажей пуст</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
