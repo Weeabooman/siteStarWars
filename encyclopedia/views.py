@@ -1,12 +1,14 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseNotAllowed
 from django.shortcuts import render, redirect
-from .models import Character, Planet
+from .models import Character, Planet, Tag, Faction
+from django.db.models import Q, F, Value, Count, Avg, Max, Min, CharField, BooleanField, IntegerField
+from django.db.models.functions import Concat
 
 # простая главная
 def index(request):
-    characters = Character.objects.all()[:3]  # Получаем последних 3 персонажа
-    planets = Planet.objects.all()[:3]  # Получаем последние 3 планеты
+    characters = Character.published.all()[:3]
+    planets = Planet.published.all()[:3]
     data = {
         'title': 'Главная страница - Энциклопедия Star Wars',
         'characters': characters,
@@ -15,7 +17,7 @@ def index(request):
     return render(request, 'encyclopedia/index.html', context=data)
 
 def characters(request):
-    characters = Character.objects.all()  # Получаем всех персонажей
+    characters = Character.published.all()
     data = {
         'title': 'Персонажи Star Wars',
         'characters': characters,
@@ -23,7 +25,7 @@ def characters(request):
     return render(request, 'encyclopedia/characters.html', context=data)
 
 def planets(request):
-    planets = Planet.objects.all()  # Получаем все планеты
+    planets = Planet.published.all()
     data = {
         'title': 'Планеты Star Wars',
         'planets': planets,
@@ -107,19 +109,84 @@ def category(request, cat_id):
     
     # Фильтруем персонажей по категории 
     if cat_id == 1:  # Джедаи
-        characters = Character.objects.filter(affiliation__icontains='Джедай')
+        characters = Character.published.filter(affiliation__icontains='Джедай')
     elif cat_id == 2:  # Ситхи
-        characters = Character.objects.filter(affiliation__icontains='Ситхи')
+        characters = Character.published.filter(affiliation__icontains='Ситхи')
     elif cat_id == 3:  # Повстанцы
-        characters = Character.objects.filter(affiliation__icontains='Повстанцы')
+        characters = Character.published.filter(affiliation__icontains='Повстанцы')
     elif cat_id == 4:  # Империя
-        characters = Character.objects.filter(affiliation__icontains='Империя')
+        characters = Character.published.filter(affiliation__icontains='Империя')
     elif cat_id == 5:  # Сенаторы
-        characters = Character.objects.filter(affiliation__icontains='Сенатор')
+        characters = Character.published.filter(affiliation__icontains='Сенатор')
     elif cat_id == 6:  # Пилоты
-        characters = Character.objects.filter(affiliation__icontains='Пилоты')
+        characters = Character.published.filter(affiliation__icontains='Пилоты')
     else:
-        characters = Character.objects.all()[:5]  
+        characters = Character.published.all()[:5]  
+    
+    context = {
+        'title': f'{category_name} - Энциклопедия Star Wars',
+        'category_name': category_name,
+        'category_id': cat_id,
+        'characters': characters
+    }
+    
+    return render(request, 'encyclopedia/category.html', context)
+def tags_list(request):
+    tags = Tag.objects.all().annotate(
+        total_characters=Count('characters'),
+        total_planets=Count('planets')
+    )
+    data = {
+        'title': 'Теги',
+        'tags': tags,
+    }
+    return render(request, 'encyclopedia/tags_list.html', context=data)
+
+def tag_detail(request, tag_slug):
+    tag = get_object_or_404(Tag, slug=tag_slug)
+    characters = Character.published.filter(tags=tag)
+    planets = Planet.published.filter(tags=tag)
+    data = {
+        'title': f'Тег: {tag.name}',
+        'tag': tag,
+        'characters': characters,
+        'planets': planets,
+    }
+    return render(request, 'encyclopedia/tag_detail.html', data)
+
+def reports(request):
+    jedi_or_rebels = Character.published.filter(
+        Q(affiliation__icontains='Джедай') | Q(affiliation__icontains='Повстанцы')
+    ).annotate(
+        full_title=Concat(Value('Персонаж: '), F('name'))
+    )
+
+    residents_by_planet = Planet.published.annotate(
+        residents_count=Count('residents')
+    ).order_by('-residents_count')
+
+    stats = Character.published.aggregate(
+        total=Count('id'),
+        max_midichlorians=Max('detail__midichlorians'),
+        min_midichlorians=Min('detail__midichlorians'),
+        avg_midichlorians=Avg('detail__midichlorians'),
+    )
+
+    # Примеры использования Value: константные поля и вычисления на стороне БД
+    with_value = Character.published.annotate(
+        kind=Value('character', output_field=CharField()),
+        is_featured=Value(True, output_field=BooleanField()),
+        score=(F('detail__midichlorians') + Value(1000, output_field=IntegerField()))
+    ).values('name', 'kind', 'is_featured', 'score')[:10]
+
+    data = {
+        'title': 'Отчеты',
+        'jedi_or_rebels': jedi_or_rebels,
+        'residents_by_planet': residents_by_planet,
+        'stats': stats,
+        'with_value': with_value,
+    }
+    return render(request, 'encyclopedia/reports.html', data)
     
     context = {
         'title': f'{category_name} - Энциклопедия Star Wars',

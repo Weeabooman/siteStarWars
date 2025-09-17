@@ -1,0 +1,44 @@
+{% extends 'encyclopedia/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<h2 class="mb-3">Тег: {{ tag.name }}</h2>
+
+<h4>Персонажи</h4>
+<div class="row row-cols-1 row-cols-md-2 g-3 mb-4">
+  {% for ch in characters %}
+  <div class="col">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">{{ ch.name }}</h5>
+        <p class="card-text">{{ ch.description|default:'Нет описания'|truncatewords:25 }}</p>
+        <a href="{{ ch.get_absolute_url }}" class="btn btn-outline-warning">Подробнее</a>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <p>Нет персонажей с этим тегом.</p>
+  {% endfor %}
+</div>
+
+<h4>Планеты</h4>
+<div class="row row-cols-1 row-cols-md-2 g-3">
+  {% for pl in planets %}
+  <div class="col">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">{{ pl.name }}</h5>
+        <p class="card-text">{{ pl.description|default:'Нет описания'|truncatewords:25 }}</p>
+        <a href="{{ pl.get_absolute_url }}" class="btn btn-outline-info">Подробнее</a>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <p>Нет планет с этим тегом.</p>
+  {% endfor %}
+</div>
+{% endblock %}
+
+
+

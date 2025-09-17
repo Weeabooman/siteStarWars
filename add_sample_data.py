@@ -11,7 +11,7 @@ import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'siteStarWars.settings')
 django.setup()
 
-from encyclopedia.models import Character, Planet
+from encyclopedia.models import Character, Planet, Tag, Faction, CharacterDetail
 
 def add_planets():
     """Добавление планет в базу данных"""
@@ -74,6 +74,38 @@ def add_planets():
             print(f"Планета уже существует: {planet.name}")
     
     return Planet.objects.all()
+
+def add_taxonomy_and_links():
+    # Фракции
+    factions = [
+        ("Джедаи", "Светлая", "jedi"),
+        ("Ситхи", "Тёмная", "sith"),
+        ("Повстанцы", "Светлая", "rebels"),
+        ("Империя", "Тёмная", "empire"),
+    ]
+    for name, side, slug in factions:
+        Faction.objects.get_or_create(name=name, slug=slug, defaults={"side": side})
+
+    # Теги
+    tags = [
+        ("Форс-чувствительный", "force-sensitive"),
+        ("Пилот", "pilot"),
+        ("Сенатор", "senator"),
+        ("Дроид", "droid"),
+    ]
+    for name, slug in tags:
+        Tag.objects.get_or_create(name=name, slug=slug)
+
+    return {
+        'jedi': Faction.objects.get(slug='jedi'),
+        'sith': Faction.objects.get(slug='sith'),
+        'rebels': Faction.objects.get(slug='rebels'),
+        'empire': Faction.objects.get(slug='empire'),
+        'tag_force': Tag.objects.get(slug='force-sensitive'),
+        'tag_pilot': Tag.objects.get(slug='pilot'),
+        'tag_senator': Tag.objects.get(slug='senator'),
+        'tag_droid': Tag.objects.get(slug='droid'),
+    }
 
 def add_characters():
     """Добавление персонажей в базу данных"""
@@ -142,6 +174,45 @@ def add_characters():
         else:
             print(f"Персонаж уже существует: {character.name}")
     
+    # Связи фракций, тегов и деталей
+    ctx = add_taxonomy_and_links()
+    try:
+        luke = Character.objects.get(slug='luke-skywalker')
+        yoda = Character.objects.get(slug='yoda')
+        vader = Character.objects.get(slug='darth-vader')
+        leia = Character.objects.get(slug='leia-organa')
+    except Character.DoesNotExist:
+        luke = yoda = vader = leia = None
+
+    if luke:
+        luke.faction = ctx['jedi']
+        luke.tags.add(ctx['tag_force'], ctx['tag_pilot'])
+        CharacterDetail.objects.get_or_create(character=luke, defaults={'lightsaber_color': 'Зелёный', 'midichlorians': 15000})
+        luke.save()
+    if yoda:
+        yoda.faction = ctx['jedi']
+        yoda.tags.add(ctx['tag_force'])
+        CharacterDetail.objects.get_or_create(character=yoda, defaults={'lightsaber_color': 'Зелёный', 'midichlorians': 18000})
+        yoda.save()
+    if vader:
+        vader.faction = ctx['sith']
+        vader.tags.add(ctx['tag_force'])
+        CharacterDetail.objects.get_or_create(character=vader, defaults={'lightsaber_color': 'Красный', 'midichlorians': 27000})
+        vader.save()
+    if leia:
+        leia.faction = ctx['rebels']
+        leia.tags.add(ctx['tag_senator'])
+        CharacterDetail.objects.get_or_create(character=leia, defaults={'lightsaber_color': '', 'midichlorians': None})
+        leia.save()
+
+    # Теги на планеты
+    tatooine = Planet.objects.filter(slug='tatooine').first()
+    naboo = Planet.objects.filter(slug='naboo').first()
+    if tatooine:
+        tatooine.tags.add(ctx['tag_pilot'])
+    if naboo:
+        naboo.tags.add(ctx['tag_senator'])
+
     return Character.objects.all()
 
 def main():

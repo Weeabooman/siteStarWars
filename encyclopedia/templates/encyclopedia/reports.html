@@ -1,0 +1,60 @@
+{% extends 'encyclopedia/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Отчеты</h2>
+
+<h4>Джедаи или повстанцы (с аннотацией Concat)</h4>
+<ul>
+  {% for ch in jedi_or_rebels %}
+    <li>{{ ch.full_title }}</li>
+  {% empty %}
+    <li>Нет данных</li>
+  {% endfor %}
+</ul>
+
+<h4>Персонажи по планетам (Count)</h4>
+<ul>
+  {% for pl in residents_by_planet %}
+    <li>{{ pl.name }} — персонажей: {{ pl.residents_count }}</li>
+  {% empty %}
+    <li>Нет данных</li>
+  {% endfor %}
+</ul>
+
+<h4>Статистика по мидихлорианам (Aggregate)</h4>
+<ul>
+  <li>Всего персонажей: {{ stats.total }}</li>
+  <li>Максимум: {{ stats.max_midichlorians|default:'—' }}</li>
+  <li>Минимум: {{ stats.min_midichlorians|default:'—' }}</li>
+  <li>Среднее: {{ stats.avg_midichlorians|default:'—' }}</li>
+  </ul>
+
+<h4>Пример использования Value (константы и вычисления)</h4>
+<table class="table table-dark table-striped">
+  <thead>
+    <tr>
+      <th>Имя</th>
+      <th>Kind (Value)</th>
+      <th>Featured (Value)</th>
+      <th>Score (midichlorians + 1000)</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in with_value %}
+      <tr>
+        <td>{{ row.name }}</td>
+        <td>{{ row.kind }}</td>
+        <td>{{ row.is_featured }}</td>
+        <td>{{ row.score|default:'—' }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="4">Нет данных</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+
+
+
