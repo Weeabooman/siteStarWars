@@ -1,36 +1,67 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseNotAllowed
 from django.shortcuts import render, redirect
 from .models import Character, Planet
 
 # простая главная
 def index(request):
-    return render(request, 'encyclopedia/index.html')
+    characters = Character.objects.all()[:3]  # Получаем последних 3 персонажа
+    planets = Planet.objects.all()[:3]  # Получаем последние 3 планеты
+    data = {
+        'title': 'Главная страница - Энциклопедия Star Wars',
+        'characters': characters,
+        'planets': planets,
+    }
+    return render(request, 'encyclopedia/index.html', context=data)
 
 def characters(request):
-    qs = Character.objects.all()
-    return render(request, 'encyclopedia/characters.html', {'characters': qs})
+    characters = Character.objects.all()  # Получаем всех персонажей
+    data = {
+        'title': 'Персонажи Star Wars',
+        'characters': characters,
+    }
+    return render(request, 'encyclopedia/characters.html', context=data)
 
 def planets(request):
-    qs = Planet.objects.all()
-    return render(request, 'encyclopedia/planets.html', {'planets': qs})
+    planets = Planet.objects.all()  # Получаем все планеты
+    data = {
+        'title': 'Планеты Star Wars',
+        'planets': planets,
+    }
+    return render(request, 'encyclopedia/planets.html', context=data)
 
-# динамический URL: по ID
-def character_detail(request, char_id):
-    try:
-        character = Character.objects.get(pk=char_id)
-        return render(request, 'encyclopedia/character_detail.html', {'character': character})
-    except Character.DoesNotExist:
-        raise Http404(f"Персонаж с ID {char_id} не найден")
+def search(request):
+    query = request.GET.get('q', '').strip()
+    characters = Character.objects.none()
+    planets = Planet.objects.none()
+    if query:
+        characters = Character.objects.filter(name__icontains=query)
+        planets = Planet.objects.filter(name__icontains=query)
+    context = {
+        'title': 'Поиск',
+        'query': query,
+        'characters': characters,
+        'planets': planets,
+    }
+    return render(request, 'encyclopedia/search_results.html', context)
 
-# динамический URL: по имени
-def planet_detail(request, name):
-    planets = ["Tatooine", "Alderaan", "Naboo"]
-    if name in planets:
-        return HttpResponse(f"<h3>Планета: {name}</h3>")
-    else:
-        # обработка ошибки
-        raise Http404(f"Планета {name} не найдена")
+# динамический URL: по slug
+def character_detail(request, character_slug):
+    character = get_object_or_404(Character, slug=character_slug)
+    data = {
+        'title': character.name,
+        'character': character,
+    }
+    return render(request, 'encyclopedia/character_detail.html', context=data)
+
+# динамический URL: по slug
+def planet_detail(request, planet_slug):
+    planet = get_object_or_404(Planet, slug=planet_slug)
+    data = {
+        'title': planet.name,
+        'planet': planet,
+    }
+    return render(request, 'encyclopedia/planet_detail.html', context=data)
     
 def code_view(request, swcode):
     return HttpResponse(f"Вы обратились к объекту с кодом {swcode}")
@@ -74,15 +105,24 @@ def category(request, cat_id):
     
     category_name = categories.get(cat_id, 'Неизвестная категория')
     
-    # Фильтруем персонажей по категории (примерная логика)
+    # Фильтруем персонажей по категории 
     if cat_id == 1:  # Джедаи
-        characters = Character.objects.filter(affiliation__icontains='джедай')
+        characters = Character.objects.filter(affiliation__icontains='Джедай')
     elif cat_id == 2:  # Ситхи
-        characters = Character.objects.filter(affiliation__icontains='ситх')
+        characters = Character.objects.filter(affiliation__icontains='Ситхи')
+    elif cat_id == 3:  # Повстанцы
+        characters = Character.objects.filter(affiliation__icontains='Повстанцы')
+    elif cat_id == 4:  # Империя
+        characters = Character.objects.filter(affiliation__icontains='Империя')
+    elif cat_id == 5:  # Сенаторы
+        characters = Character.objects.filter(affiliation__icontains='Сенатор')
+    elif cat_id == 6:  # Пилоты
+        characters = Character.objects.filter(affiliation__icontains='Пилоты')
     else:
-        characters = Character.objects.all()[:5]  # Показываем первых 5 для примера
+        characters = Character.objects.all()[:5]  
     
     context = {
+        'title': f'{category_name} - Энциклопедия Star Wars',
         'category_name': category_name,
         'category_id': cat_id,
         'characters': characters

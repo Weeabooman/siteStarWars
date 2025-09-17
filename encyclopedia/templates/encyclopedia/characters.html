@@ -33,12 +33,12 @@
                 <p class="card-text">
                   <strong>Вид:</strong> {{ character.species|default:"Не указан" }}<br>
                   <strong>Родная планета:</strong> {{ character.homeworld.name|default:"Не указана" }}<br>
-                  <strong>Аффилиация:</strong> {{ character.affiliation|default:"Не указана" }}
+                  <strong>Фракция:</strong> {{ character.affiliation|default:"Не указана" }}
                 </p>
                 <p class="card-text">
                   {{ character.description|truncatewords:15|default:"Описание отсутствует" }}
                 </p>
-                <a href="{% url 'character_detail' character.id %}" class="btn btn-primary">Подробнее</a>
+                <a href="{{ character.get_absolute_url }}" class="btn btn-primary">Подробнее</a>
               </div>
             </div>
           </div>

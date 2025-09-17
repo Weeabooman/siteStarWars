@@ -1,0 +1,85 @@
+{% extends 'encyclopedia/base.html' %}
+{% load encyclopedia_tags %}
+
+{% block title %}{{ planet.name }} - Энциклопедия Star Wars{% endblock %}
+{% block heading %}🪐 {{ planet.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">📋 Основная информация</h5>
+        <table class="table table-dark">
+          <tbody>
+            <tr>
+              <td><strong>Название:</strong></td>
+              <td>{{ planet.name }}</td>
+            </tr>
+            <tr>
+              <td><strong>Система:</strong></td>
+              <td>{{ planet.system|default:"Не указана" }}</td>
+            </tr>
+            <tr>
+              <td><strong>Климат:</strong></td>
+              <td>{{ planet.climate|default:"Не указан" }}</td>
+            </tr>
+            <tr>
+              <td><strong>Население:</strong></td>
+              <td>
+                {% if planet.population %}
+                  {{ planet.population|population_format }} жителей
+                {% else %}
+                  Не указано
+                {% endif %}
+              </td>
+            </tr>
+            
+          </tbody>
+        </table>
+        
+        {% if planet.description %}
+          <h5 class="card-title mt-4">📖 Описание</h5>
+          <p class="card-text">{{ planet.description|linebreaks }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">👥 Жители планеты</h5>
+        {% if planet.residents.all %}
+          <ul class="list-group list-group-flush">
+            {% for resident in planet.residents.all %}
+              <li class="list-group-item">
+                <a href="{{ resident.get_absolute_url }}" class="text-decoration-none">
+                  {{ resident.name }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="card-text">Информация о жителях отсутствует</p>
+        {% endif %}
+      </div>
+    </div>
+    
+    <div class="card mt-3">
+      <div class="card-body">
+        <h5 class="card-title">🔗 Связанные ссылки</h5>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <a href="{% url 'planets' %}" class="text-decoration-none">🪐 Все планеты</a>
+          </li>
+          <li class="list-group-item">
+            <a href="{% url 'characters' %}" class="text-decoration-none">👥 Все персонажи</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

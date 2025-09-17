@@ -24,7 +24,7 @@
             <p class="card-text">
               {{ planet.description|truncatewords:20|default:"Описание отсутствует" }}
             </p>
-            <a href="{% url 'planet_detail' planet.name %}" class="btn btn-primary">Подробнее</a>
+            <a href="{{ planet.get_absolute_url }}" class="btn btn-primary">Подробнее</a>
           </div>
         </div>
       </div>

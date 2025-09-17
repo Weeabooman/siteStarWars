@@ -9,8 +9,9 @@ urlpatterns = [
     path('', views.index, name='home'),
     path('characters/', views.characters, name='characters'),
     path('planets/', views.planets, name='planets'),
-    path('character/<int:char_id>/', views.character_detail, name='character_detail'),
-    path('planet/<str:name>/', views.planet_detail, name='planet_detail'),
+    path('search/', views.search, name='search'),
+    path('character/<slug:character_slug>/', views.character_detail, name='character_detail'),
+    path('planet/<slug:planet_slug>/', views.planet_detail, name='planet_detail'),
     # собственный конвертер
     path('code/<sw:swcode>/', views.code_view, name='code_view'),
     path('start/', views.start, name='start'),

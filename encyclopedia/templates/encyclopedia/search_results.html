@@ -1,0 +1,58 @@
+{% extends 'encyclopedia/base.html' %}
+
+{% block title %}Поиск{% endblock %}
+{% block heading %}Результаты поиска{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12 mb-3">
+    {% if query %}
+      <p>Запрос: <strong>{{ query }}</strong></p>
+    {% else %}
+      <div class="alert alert-info">Введите запрос в поле поиска сверху.</div>
+    {% endif %}
+  </div>
+
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">👥 Персонажи</div>
+      <div class="card-body">
+        {% if characters %}
+          <ul class="list-group list-group-flush">
+            {% for c in characters %}
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>{{ c.name }}</span>
+                <a class="btn btn-sm btn-primary" href="{{ c.get_absolute_url }}">Подробнее</a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="card-text">Ничего не найдено.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">🪐 Планеты</div>
+      <div class="card-body">
+        {% if planets %}
+          <ul class="list-group list-group-flush">
+            {% for p in planets %}
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>{{ p.name }}</span>
+                <a class="btn btn-sm btn-outline-primary" href="{{ p.get_absolute_url }}">Подробнее</a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="card-text">Ничего не найдено.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+

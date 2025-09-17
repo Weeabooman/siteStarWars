@@ -19,7 +19,30 @@
         </p>
       </div>
     </div>
+    
+    <!-- Последние добавленные персонажи -->
+    {% if characters %}
+      <div class="card mt-3">
+        <div class="card-body">
+          <h5 class="card-title">👥 Последние персонажи</h5>
+          <div class="row">
+            {% for character in characters %}
+              <div class="col-md-4 mb-2">
+                <div class="card bg-dark">
+                  <div class="card-body p-2">
+                    <h6 class="card-title">{{ character.name }}</h6>
+                    <p class="card-text small">{{ character.species|default:"Не указан" }}</p>
+                    <a href="{{ character.get_absolute_url }}" class="btn btn-sm btn-primary">Подробнее</a>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
   </div>
+  
   <div class="col-md-4">
     <div class="card">
       <div class="card-body">
@@ -31,12 +54,25 @@
           <li class="list-group-item">
             <a href="{% url 'planets' %}" class="text-decoration-none">🪐 Планеты</a>
           </li>
-          <li class="list-group-item">
-            <a href="{% url 'get_character' %}?name=Luke Skywalker" class="text-decoration-none">🔍 Поиск персонажа</a>
-          </li>
         </ul>
       </div>
     </div>
+    
+    <!-- Последние добавленные планеты -->
+    {% if planets %}
+      <div class="card mt-3">
+        <div class="card-body">
+          <h5 class="card-title">🪐 Последние планеты</h5>
+          {% for planet in planets %}
+            <div class="mb-2">
+              <h6>{{ planet.name }}</h6>
+              <p class="card-text">{{ planet.system|default:"Система не указана" }}</p>
+              <a href="{{ planet.get_absolute_url }}" class="btn btn-sm btn-outline-primary">Подробнее</a>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

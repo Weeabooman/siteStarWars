@@ -19,9 +19,12 @@
             <a class="nav-link" href="{% url 'home' %}">🏠 Главная</a>
             <a class="nav-link" href="{% url 'characters' %}">👥 Персонажи</a>
             <a class="nav-link" href="{% url 'planets' %}">🪐 Планеты</a>
-            <a class="nav-link" href="{% url 'start' %}">🚀 Старт</a>
             <a class="nav-link" href="{% url 'code_view' swcode='SW-001' %}">🔗 Коды</a>
           </div>
+          <form class="d-flex" role="search" action="{% url 'search' %}" method="get">
+            <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Search" name="q" value="{{ request.GET.q }}">
+            <button class="btn btn-outline-warning" type="submit">Найти</button>
+          </form>
         </div>
       </nav>
     </header>

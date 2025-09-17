@@ -24,7 +24,7 @@
               <td><strong>Родная планета:</strong></td>
               <td>
                 {% if character.homeworld %}
-                  <a href="{% url 'planet_detail' character.homeworld.name %}" class="text-warning">
+                  <a href="{{ character.homeworld.get_absolute_url }}" class="text-warning">
                     {{ character.homeworld.name }}
                   </a>
                 {% else %}
@@ -33,7 +33,7 @@
               </td>
             </tr>
             <tr>
-              <td><strong>Аффилиация:</strong></td>
+              <td><strong>Фракция:</strong></td>
               <td>{{ character.affiliation|default:"Не указана" }}</td>
             </tr>
             <tr>
@@ -65,15 +65,13 @@
           </li>
           {% if character.homeworld %}
             <li class="list-group-item">
-              <a href="{% url 'planet_detail' character.homeworld.name %}" class="text-decoration-none">
+              <a href="{{ character.homeworld.get_absolute_url }}" class="text-decoration-none">
                 🪐 {{ character.homeworld.name }}
               </a>
             </li>
           {% endif %}
           <li class="list-group-item">
-            <a href="{% url 'get_character' %}?name={{ character.name }}" class="text-decoration-none">
-              🔍 Поиск по имени
-            </a>
+            <!-- Поиск по имени убран по требованию -->
           </li>
         </ul>
       </div>
@@ -95,3 +93,4 @@
   </div>
 </div>
 {% endblock %}
+
